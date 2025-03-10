@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مراقبة صحة الطفل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> <!-- تأكد من اسم الملف -->
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- الشريط العلوي -->
         <div class="header">
             <h1>🏥 نظام مراقبة صحة الطفل</h1>
             <p class="subtitle">تحليل مؤشر كتلة الجسم (BMI) للأطفال من 2 إلى 18 سنة</p>
         </div>
 
-        <!-- اختيار نوع المستخدم -->
         <div class="user-type">
             <select id="userType">
                 <option value="parent">أب/أم</option>
@@ -25,34 +22,43 @@
             </select>
         </div>
 
-        <!-- بطاقة الإدخال -->
         <div class="input-card">
             <div class="input-group">
                 <label><i class="fas fa-user"></i> اسم الطفل</label>
-                <input type="text" id="name" placeholder="مثال: أحمد">
+                <input type="text" id="name" placeholder="مثال: أحمد" oninput="validateName(this)">
+                <small class="error-msg" id="nameError"></small>
             </div>
             
             <div class="input-row">
                 <div class="input-group">
                     <label><i class="fas fa-calendar"></i> العمر</label>
-                    <input type="number" id="age" placeholder="2-18 سنة">
+                    <input type="number" id="age" placeholder="2-18 سنة" oninput="validateNumber(this)">
+                    <small class="error-msg" id="ageError"></small>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-venus-mars"></i> الجنس</label>
+                    <select id="gender">
+                        <option value="male">ذكر</option>
+                        <option value="female">أنثى</option>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label><i class="fas fa-ruler-vertical"></i> الطول (سم)</label>
-                    <input type="number" id="height">
+                    <input type="number" id="height" oninput="validateNumber(this)">
+                    <small class="error-msg" id="heightError"></small>
                 </div>
                 <div class="input-group">
                     <label><i class="fas fa-weight"></i> الوزن (كجم)</label>
-                    <input type="number" id="weight">
+                    <input type="number" id="weight" oninput="validateNumber(this)">
+                    <small class="error-msg" id="weightError"></small>
                 </div>
             </div>
 
-            <button class="primary-btn" onclick="calculateBMI()">
+            <button class="primary-btn" onclick="calculateBMI()" rel="noopener">
                 <i class="fas fa-calculator"></i> تحليل النتائج
             </button>
         </div>
 
-        <!-- بطاقة النتائج -->
         <div id="result" class="result-card hidden">
             <div class="result-header">
                 <h2>النتائج</h2>
@@ -66,6 +72,7 @@
                 <div class="status-card" id="status">
                     <i class="fas fa-heartbeat"></i>
                     <h3 id="resultTitle"></h3>
+                    <img id="bmiImage" class="bmi-image" src="" alt="BMI Category">
                 </div>
 
                 <div class="advice-section">
@@ -79,7 +86,6 @@
             </div>
         </div>
 
-        <!-- تأثير الاحتفال -->
         <div id="celebration" class="celebration hidden">
             🎉 وزن مثالي! أحسنت
         </div>
