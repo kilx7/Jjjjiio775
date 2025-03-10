@@ -1,36 +1,36 @@
 let myChart = null;
 
 const adviceList = {
-    نحافة: {
+    "نحافة": {
         parent: [
             "1. زيادة عدد الوجبات إلى 5-6 وجبات يومية",
             "2. إضافة زيت الزيتون إلى الأطعمة",
             "3. مراجعة أخصائي تغذية",
-            `<a href="https://example.com/underweight" target="_blank">نصائح إضافية</a>`
+            `<a href="https://www.mayoclinic.org/ar/healthy-lifestyle/nutrition-and-healthy-eating/expert-answers/underweight/faq-20058429" target="_blank">مرجع طبي للنحافة</a>`
         ],
         teacher: [
             "1. مراقبة تغذية الطفل في المدرسة",
             "2. توفير وجبات خفيفة صحية",
             "3. التواصل مع الأهل",
-            `<a href="https://example.com/underweight-teacher" target="_blank">مراجع للمعلمين</a>`
+            `<a href="https://www.mayoclinic.org/ar/healthy-lifestyle/nutrition-and-healthy-eating/expert-answers/underweight/faq-20058429" target="_blank">مرجع للمعلمين</a>`
         ]
     },
-    مثالي: {
+    "مثالي": {
         parent: ["🎉 حافظ على النظام الغذائي الصحي!"],
         teacher: ["🏆 شجع التلاميذ على الاستمرار!"]
     },
-    "زيادة وزن": {
+    "وزن زائد": {
         parent: [
             "1. تقليل العصائر المحلاة",
             "2. ممارسة الرياضة الجماعية",
             "3. استبدال المقليات بالمسلوق",
-            `<a href="https://example.com/overweight" target="_blank">نصائح إضافية</a>`
+            `<a href="https://www.mayoclinic.org/ar/healthy-lifestyle/weight-loss/in-depth/weight-loss/art-20048466" target="_blank">مرجع طبي لزيادة الوزن</a>`
         ],
         teacher: [
             "1. تنظيم أنشطة رياضية إضافية",
             "2. توعية حول الوجبات المدرسية",
             "3. إشراك الأهل",
-            `<a href="https://example.com/overweight-teacher" target="_blank">مراجع للمعلمين</a>`
+            `<a href="https://www.mayoclinic.org/ar/healthy-lifestyle/weight-loss/in-depth/weight-loss/art-20048466" target="_blank">مرجع للمعلمين</a>`
         ]
     },
     "سمنة مفرطة": {
@@ -38,28 +38,30 @@ const adviceList = {
             "1. مراجعة طبيب أطفال فورية",
             "2. تحديد وقت الشاشات إلى ساعة يوميًا",
             "3. مشاركة الأسرة في الأنشطة",
-            `<a href="https://example.com/obese" target="_blank">نصائح إضافية</a>`
+            `<a href="https://www.mayoclinic.org/ar/diseases-conditions/childhood-obesity/symptoms-causes/syc-20354827" target="_blank">مرجع طبي للسمنة</a>`
         ],
         teacher: [
             "1. تنظيم ورش عمل عن السمنة",
             "2. مراقبة المقاصف المدرسية",
             "3. التعاون مع المختصين",
-            `<a href="https://example.com/obese-teacher" target="_blank">مراجع للمعلمين</a>`
+            `<a href="https://www.mayoclinic.org/ar/diseases-conditions/childhood-obesity/symptoms-causes/syc-20354827" target="_blank">مرجع للمعلمين</a>`
         ]
     }
 };
 
+// ... (باقي الكود يبقى كما هو مع التأكد من مسارات الصور) ...
+
 const bmiData = {
     female: {
-        2: [14.3, 16.2, 17.5, 19.1],
-        5: [13.8, 15.8, 17.1, 19.7],
-        10: [14.2, 16.3, 18.2, 21.9],
+        2: [14.3, 18.5, 25, 30],
+        5: [13.8, 18.5, 25, 30],
+        10: [14.2, 18.5, 25, 30],
         18: [18.5, 24.9, 29.9, 40]
     },
     male: {
-        2: [14.8, 16.8, 18.1, 19.8],
-        5: [14.4, 16.5, 18.4, 20.7],
-        10: [15.1, 17.2, 19.8, 24.0],
+        2: [14.8, 18.5, 25, 30],
+        5: [14.4, 18.5, 25, 30],
+        10: [15.1, 18.5, 25, 30],
         18: [18.5, 24.9, 29.9, 40]
     }
 };
@@ -72,15 +74,115 @@ function getReferenceData(age, gender) {
     return bmiData[gender][closestAge];
 }
 
+function validateName(input) {
+    const regex = /^[\u0600-\u06FF\s]+$/;
+    if (!regex.test(input.value)) {
+        input.value = input.value.replace(/[^ء-ي\s]/g, '');
+        document.getElementById('nameError').textContent = 'يسمح بالأحرف العربية فقط!';
+    } else {
+        document.getElementById('nameError').textContent = '';
+    }
+}
+
+function validateNumber(input) {
+    const regex = /^[0-9]*$/;
+    if (!regex.test(input.value)) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        document.getElementById(`${input.id}Error`).textContent = 'يسمح بالأرقام فقط!';
+    } else {
+        document.getElementById(`${input.id}Error`).textContent = '';
+    }
+}
+
+function calculateBMI() {
+    const inputs = document.querySelectorAll('input');
+    let isValid = true;
+
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            isValid = false;
+            document.getElementById(`${input.id}Error`).textContent = 'هذا الحقل مطلوب!';
+        } else {
+            document.getElementById(`${input.id}Error`).textContent = '';
+        }
+    });
+
+    if (!isValid) return;
+
+    const age = parseInt(document.getElementById('age').value);
+    if (age > 18 || age < 2) {
+        alert("الرجاء إدخال عمر بين 2 و 18 سنة!");
+        return;
+    }
+
+    const weight = parseFloat(document.getElementById('weight').value);
+    const height = parseFloat(document.getElementById('height').value);
+    
+    if (weight <= 0 || height <= 0) {
+        alert("الرجاء إدخال قيم صحيحة!");
+        return;
+    }
+
+    const heightInMeters = height / 100;
+    const bmi = (weight / (heightInMeters ** 2)).toFixed(1);
+    
+    showResult(bmi);
+    updateChart(bmi);
+}
+
+function getCategory(bmi, age, gender) {
+    const refData = getReferenceData(age, gender);
+    if (bmi < refData[0]) return 'نحافة';
+    if (bmi < refData[1]) return 'مثالي';
+    if (bmi < refData[2]) return 'وزن زائد';
+    return 'سمنة مفرطة';
+}
+
+function showResult(bmi) {
+    const userType = document.getElementById('userType').value;
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+    const category = getCategory(parseFloat(bmi), age, gender);
+    const resultDiv = document.getElementById('result');
+    const adviceDiv = document.getElementById('advice');
+    const bmiImage = document.getElementById('bmiImage');
+
+    const images = {
+        'نحافة': 'images/underweight.png',
+        'مثالي': 'images/normal.png',
+        'وزن زائد': 'images/overweight.png',
+        'سمنة مفرطة': 'images/obese.png'
+    };
+    bmiImage.src = images[category];
+
+    if (!adviceList[category]) {
+        alert("خطأ في تحليل النتائج!");
+        return;
+    }
+
+    resultDiv.classList.remove('hidden');
+    resultDiv.classList.add('active');
+    
+    document.getElementById('bmiValue').textContent = bmi;
+    document.getElementById('resultTitle').textContent = category;
+
+    const adviceItems = adviceList[category][userType];
+    adviceDiv.innerHTML = adviceItems.map(item => `
+        <div class="advice-item">${item}</div>
+    `).join('');
+
+    if (category === 'مثالي') showCelebration();
+}
+
 function updateChart(bmi) {
     const ctx = document.getElementById('bmiChart').getContext('2d');
     const age = parseInt(document.getElementById('age').value);
-    const gender = 'male'; // يمكن إضافة حقل اختيار الجنس في الـ HTML
+    const gender = document.getElementById('gender').value;
     
     if (myChart) myChart.destroy();
     
     const refData = getReferenceData(age, gender);
-    const labels = ['نحافة شديدة', 'نحافة', 'مثالي', 'زيادة وزن', 'سمنة مفرطة'];
+    const labels = ['نحافة', 'مثالي', 'وزن زائد', 'سمنة مفرطة'];
     
     myChart = new Chart(ctx, {
         type: 'line',
@@ -173,61 +275,6 @@ function updateChart(bmi) {
             rtl: true
         }
     });
-}
-
-function calculateBMI() {
-    const age = parseInt(document.getElementById('age').value);
-    if (age > 18 || age < 2) {
-        alert("الرجاء إدخال عمر بين 2 و 18 سنة!");
-        return;
-    }
-
-    const weight = parseFloat(document.getElementById('weight').value);
-    const height = parseFloat(document.getElementById('height').value);
-    
-    if (!weight || !height || weight <= 0 || height <= 0) {
-        alert("الرجاء إدخال قيم صحيحة!");
-        return;
-    }
-
-    const heightInMeters = height / 100;
-    const bmi = (weight / (heightInMeters ** 2)).toFixed(1);
-    
-    showResult(bmi);
-    updateChart(bmi);
-}
-
-function getCategory(bmi) {
-    if (bmi < 16) return 'نحافة';          // نحافة شديدة
-    if (bmi < 18.5) return 'نحافة';       // نحافة عادية
-    if (bmi < 25) return 'مثالي';
-    if (bmi < 30) return 'زيادة وزن';
-    return 'سمنة مفرطة';
-}
-
-function showResult(bmi) {
-    const userType = document.getElementById('userType').value;
-    const category = getCategory(parseFloat(bmi));
-    const resultDiv = document.getElementById('result');
-    const adviceDiv = document.getElementById('advice');
-    
-    if (!adviceList[category]) {
-        alert("خطأ في تحليل النتائج!");
-        return;
-    }
-
-    resultDiv.classList.remove('hidden');
-    resultDiv.classList.add('active');
-    
-    document.getElementById('bmiValue').textContent = bmi;
-    document.getElementById('resultTitle').textContent = category;
-
-    const adviceItems = adviceList[category][userType];
-    adviceDiv.innerHTML = adviceItems.map(item => `
-        <div class="advice-item">${item}</div>
-    `).join('');
-
-    if (category === 'مثالي') showCelebration();
 }
 
 function showCelebration() {
